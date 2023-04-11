@@ -35,6 +35,8 @@ $(function () {
               .attr('width', '40')
               .attr('height', '40');
             img.attr('src', dataURL ? dataURL : '../assets/avatar.png');
+            $('#objectImage').attr('src', dataURL);
+
             $('tbody').prepend(
               `<tr>
                 <td id="image-container" class="text-center align-middle" >
@@ -58,6 +60,7 @@ $(function () {
 
           $('.modal').modal('hide');
         } else {
+          $('#objectImage').attr('src', '../assets/avatar.png');
           $('tbody').prepend(
             `<tr>
               <td id="image-container" class="text-center align-middle"><img src="../assets/avatar.png" width="40"/></td>
@@ -78,9 +81,14 @@ $(function () {
           );
           $('.modal').modal('hide');
         }
+
+        $('#objectName').text(formObject.name);
+        $('#objectEmail').text(formObject.email);
+        $('#objectPhone').text(formObject.phone);
       }
       $(this).addClass('was-validated');
       this.reset();
+      $('#objectDetails').removeClass('d-none');
     });
   });
 
@@ -95,7 +103,7 @@ $(function () {
         return user.id === recipient;
       });
 
-      $('.details-modal-body').prepend(
+      $('.modal-body-details').prepend(
         ` <ul id="modal__user-info" >
                                    
                         <li >
