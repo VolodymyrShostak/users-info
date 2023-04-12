@@ -5,7 +5,7 @@ $(function () {
 
   const users = [];
 
-  $('#createUserModal').on('hidden.bs.modal', function () {
+  $('#createUserModal').on('hide.bs.modal', function () {
     $('#formModal').removeClass('was-validated');
   });
   function validatePhone(phone) {
@@ -161,7 +161,6 @@ $(function () {
 
         $('#generateUserModal').modal('hide');
 
-        
         $('tbody').prepend(
           `<tr>
                 <td id="image-container" class="text-center align-middle" >
@@ -175,7 +174,7 @@ $(function () {
                 <td class="text-center align-middle">${newUser?.phone}</td>
                 <td class="text-center align-middle">
                 <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#detailsModal" data-id="${
-                  newUser.id
+                  newUser?.id
                 }">
                   Details
                 </button></td>
