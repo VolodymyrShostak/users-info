@@ -12,16 +12,16 @@ $(function () {
     const regex = /^\+38\(\d{3}\)\d{3}-\d{2}-\d{2}$/;
     return regex.test(phone);
   }
-
-  $('.needs-validation').each(function () {
+  // Обробка діалогової форми
+  $('#formModal').each(function () {
     $(this).submit(function (event) {
       event.preventDefault();
       event.stopPropagation();
+      $(this).addClass('was-validated');
       if (!this.checkValidity()) {
-        $(this).addClass('was-validated');
         return;
       }
-      $(this).addClass('was-validated');
+
       const formData = new FormData(this);
       const formObject = {};
       for (let pair of formData.entries()) {
