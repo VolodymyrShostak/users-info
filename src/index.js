@@ -112,23 +112,27 @@ $(function () {
 
       $('.modal-body-details').prepend(
         ` <ul id="modal__user-info" >
-                        
-                        <li >
-                            <p>${user?.name}</p>
-                        </li>
-                                   
-                        <li >
-                            <p>${user?.gender}</p>
-                        </li>
-                        <li>
-                            <p>${user?.city}</p>
-                        </li>
-                        <li>
-                            <p>${user?.email}</p>
-                        </li>
-                        <li>
-                            <p>${user?.phone}</p>
-                        </li>
+                        <div class="d-flex flex-row" >
+                        <p>Ім'я:&#160;&#160;&#160;</p>
+                            <p class="font-weight-bold">${user?.name}</p>
+                        </div>
+                             
+                        <div class="d-flex flex-row" >
+                        <p>Стать:&#160;&#160;&#160;</p>
+                            <p class="font-weight-bold">${user?.gender}</p>
+                        </div>
+                        <div class="d-flex flex-row" >
+                        <p>Місто:&#160;&#160;&#160;</p>
+                            <p class="font-weight-bold">${user?.city}</p>
+                        </div>
+                        <div>
+                        <p>Електронна адреса:&#160;&#160;&#160;</p>
+                            <p class="font-weight-bold">${user?.email}</p>
+                        </div>
+                       <div class="d-flex flex-row" >
+                        <p>Телефон:&#160;&#160;&#160;</p>
+                            <p class="font-weight-bold">${user?.phone}</p>
+                        </div>
                     </ul>`
       );
     });
@@ -168,7 +172,7 @@ $(function () {
           avatar: user.picture?.large,
           id: Date.now(),
         };
-        // const newUser = { ...user, id: Date.now() };
+
         $('#objectImage').attr('src', newUser.avatar);
         $('#objectName').text(newUser.name);
         $('#objectEmail').text(newUser.email);
