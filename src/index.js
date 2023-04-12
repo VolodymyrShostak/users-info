@@ -1,44 +1,59 @@
 $(function () {
-  $('#phoneInput').mask('+38 (999) 999-99-99');
+  $('#phoneInput').mask('+38 (000) 000-00-00', {
+    placeholder: '+38 (___) ___-__-__',
+  });
 
   const users = [];
 
   $('#createUserModal').on('hidden.bs.modal', function () {
     $('#formModal').removeClass('was-validated');
   });
+  function validatePhone(phone) {
+    const regex = /^\+38\(\d{3}\)\d{3}-\d{2}-\d{2}$/;
+    return regex.test(phone);
+  }
 
   $('.needs-validation').each(function () {
     $(this).submit(function (event) {
+      event.preventDefault();
+      event.stopPropagation();
       if (!this.checkValidity()) {
-        event.preventDefault();
-        event.stopPropagation();
+        $(this).addClass('was-validated');
+        return;
+      }
+      $(this).addClass('was-validated');
+      const formData = new FormData(this);
+      const formObject = {};
+      for (let pair of formData.entries()) {
+        formObject[pair[0]] = pair[1];
+      }
+      const phoneInput = formObject['phone'];
+      if (!validatePhone(phoneInput)) {
+        $('#phoneInput').removeClass('is-valid');
+        $('#phoneInput').addClass('is-invalid');
       } else {
-        event.preventDefault();
-        const formObject = {};
-        const formData = new FormData(this);
+        $('#phoneInput').removeClass('is-invalid');
+        $('#phoneInput').addClass('is-valid');
+      }
 
-        for (let pair of formData.entries()) {
-          formObject[pair[0]] = pair[1];
-        }
+      const user = { ...formObject, id: Date.now() };
+      users.push(user);
 
-        const user = { ...formObject, id: Date.now() };
-        users.push(user);
+      const file = $('#avatarInput').get(0).files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function () {
+          const dataURL = reader.result;
 
-        const file = $('#avatarInput').get(0).files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function () {
-            const dataURL = reader.result;
+          const img = $('<img />')
+            .addClass('rounded-5')
+            .attr('width', '40')
+            .attr('height', '40');
+          img.attr('src', dataURL ? dataURL : '../assets/avatar.png');
+          $('#objectImage').attr('src', dataURL);
 
-            const img = $('<img />')
-              .addClass('rounded-5')
-              .attr('width', '40')
-              .attr('height', '40');
-            img.attr('src', dataURL ? dataURL : '../assets/avatar.png');
-            $('#objectImage').attr('src', dataURL);
-
-            $('tbody').prepend(
-              `<tr>
+          $('tbody').prepend(
+            `<tr>
                 <td id="image-container" class="text-center align-middle" >
                 <img class="rounded-5" src="${dataURL}" width="40" height="40"/></td>
                 <td class="text-center align-middle">${formObject.name}</td>
@@ -54,15 +69,15 @@ $(function () {
               Details
             </button></td>
               </tr>`
-            );
-          };
-          reader.readAsDataURL(file);
+          );
+        };
+        reader.readAsDataURL(file);
 
-          $('.modal').modal('hide');
-        } else {
-          $('#objectImage').attr('src', '../assets/avatar.png');
-          $('tbody').prepend(
-            `<tr>
+        $('.modal').modal('hide');
+      } else {
+        $('#objectImage').attr('src', '../assets/avatar.png');
+        $('tbody').prepend(
+          `<tr>
               <td id="image-container" class="text-center align-middle"><img src="../assets/avatar.png" width="40"/></td>
             <td class="text-center align-middle">${formObject.name}</td>
                  <td class="text-center align-middle">${formObject.email}</td>
@@ -78,16 +93,16 @@ $(function () {
               Details
             </button></td>
             </tr>`
-          );
-          $('.modal').modal('hide');
-        }
-
-        $('#objectName').text(formObject.name);
-        $('#objectEmail').text(formObject.email);
-        $('#objectPhone').text(formObject.phone);
+        );
+        $('.modal').modal('hide');
       }
-      $(this).addClass('was-validated');
+
+      $('#objectName').text(formObject.name);
+      $('#objectEmail').text(formObject.email);
+      $('#objectPhone').text(formObject.phone);
+
       this.reset();
+      $('#phoneInput').removeClass('is-invalid');
       $('#objectDetails').removeClass('d-none');
     });
   });
@@ -136,6 +151,10 @@ $(function () {
   $('#generateBtn').on('click', function () {
     const gender = $('#genderSelect').val();
     const url = `https://randomuser.me/api/?gender=${gender}`;
+    const spinner = $(
+      '<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>'
+    );
+    $('#queryModal').prepend(spinner);
 
     $.ajax({
       url: url,
@@ -178,6 +197,26 @@ $(function () {
                 </button></td>
               </tr>`
         );
+        spinner.remove();
+        const successAlert = $(
+          '<div class="alert alert-success alert-dismissible fade show " role="alert">Користувач успішно згенерований!</div>'
+        );
+        $('#table').prepend(successAlert);
+        setTimeout(function () {
+          successAlert.alert('close');
+        }, 3000);
+      },
+
+      error: function () {
+        spinner.remove();
+
+        const errorAlert = $(
+          '<div class="alert alert-danger alert-dismissible fade show" role="alert">Помилка генерації користувача!</div>'
+        );
+        $('.modal-body').prepend(errorAlert);
+        setTimeout(function () {
+          errorAlert.alert('close');
+        }, 3000);
       },
     });
   });
