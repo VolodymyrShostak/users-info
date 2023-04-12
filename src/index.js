@@ -93,9 +93,9 @@ $(function () {
       $('#objectEmail').text(formObject.email);
       $('#objectPhone').text(formObject.phone);
 
-      this.reset();
       $('#phoneInput').removeClass('is-invalid');
       $('#objectDetails').removeClass('d-none');
+      this.reset();
     });
   });
 
@@ -161,26 +161,18 @@ $(function () {
 
         $('#generateUserModal').modal('hide');
 
-        const img = $('<img />')
-          .addClass('rounded-5')
-          .attr('width', '40')
-          .attr('height', '40');
-        img.attr(
-          'src',
-          newUser.picture.large ? newUser.picture.large : '../assets/avatar.png'
-        );
-
+        
         $('tbody').prepend(
           `<tr>
                 <td id="image-container" class="text-center align-middle" >
                 <img class="rounded-5" src="${
-                  newUser.picture.large
+                  newUser?.picture.large
                 }" width="40" height="40"/></td>
                 <td class="text-center align-middle">${
-                  newUser.name.first + ' ' + newUser.name.last
+                  newUser?.name.first + ' ' + newUser?.name.last
                 }</td>
-                 <td class="text-center align-middle">${newUser.email}</td>
-                <td class="text-center align-middle">${newUser.phone}</td>
+                 <td class="text-center align-middle">${newUser?.email}</td>
+                <td class="text-center align-middle">${newUser?.phone}</td>
                 <td class="text-center align-middle">
                 <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#detailsModal" data-id="${
                   newUser.id
