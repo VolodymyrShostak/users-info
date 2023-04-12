@@ -112,6 +112,10 @@ $(function () {
 
       $('.modal-body-details').prepend(
         ` <ul id="modal__user-info" >
+                        
+                        <li >
+                            <p>${user?.name}</p>
+                        </li>
                                    
                         <li >
                             <p>${user?.gender}</p>
@@ -154,28 +158,36 @@ $(function () {
 
       success: function (data) {
         const user = data.results[0];
-
-        const newUser = { ...user, id: Date.now() };
+        console.log(user);
+        const newUser = {
+          name: user.name.first + ' ' + user.name.last,
+          city: user.location.city,
+          phone: user.phone,
+          email: user.email,
+          gender: user.gender,
+          avatar: user.picture?.large,
+          id: Date.now(),
+        };
+        // const newUser = { ...user, id: Date.now() };
+        $('#objectImage').attr('src', newUser.avatar);
+        $('#objectName').text(newUser.name);
+        $('#objectEmail').text(newUser.email);
+        $('#objectPhone').text(newUser.phone);
+        $('#objectDetails').removeClass('d-none');
 
         users.push(newUser);
-
+        console.log(users);
         $('#generateUserModal').modal('hide');
 
         $('tbody').prepend(
           `<tr>
                 <td id="image-container" class="text-center align-middle" >
-                <img class="rounded-5" src="${
-                  newUser?.picture.large
-                }" width="40" height="40"/></td>
-                <td class="text-center align-middle">${
-                  newUser?.name.first + ' ' + newUser?.name.last
-                }</td>
+                <img class="rounded-5" src="${newUser?.avatar}" width="40" height="40"/></td>
+                <td class="text-center align-middle">${newUser?.name}</td>
                  <td class="text-center align-middle">${newUser?.email}</td>
                 <td class="text-center align-middle">${newUser?.phone}</td>
                 <td class="text-center align-middle">
-                <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#detailsModal" data-id="${
-                  newUser?.id
-                }">
+                <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#detailsModal" data-id="${newUser?.id}">
                   Details
                 </button></td>
               </tr>`
