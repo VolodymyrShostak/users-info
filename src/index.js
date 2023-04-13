@@ -5,7 +5,7 @@ $(function () {
 
   const users = [];
 
-  $('#createUserModal').on('hide.bs.modal', function () {
+  $('#createUserModal').on('show.bs.modal', function () {
     $('#formModal').removeClass('was-validated');
   });
   function validatePhone(phone) {
@@ -215,7 +215,7 @@ $(function () {
         $('.modal-body').prepend(errorAlert);
         setTimeout(function () {
           errorAlert.alert('close');
-        }, 3000);
+        }, 2000);
       },
     });
   });
