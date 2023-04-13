@@ -116,14 +116,16 @@
             </div>
             <div class="form-group">
               <label for="validationCustom03" class="form-label">Адреса проживання</label>
-              <input type="text" class="form-control " name="city" id="validationCustom03">
+              <input type="text" class="form-control " name="city" id="validationCustom03" data-validation-custom03
+                data-pattern="^[A-Za-zА-Яа-яЁёІіЇїЄє\s]+$">
               <div class="invalid-feedback">
                 Будь ласка, введіть правильну адресу проживання.
               </div>
             </div>
             <div class="col-md-3">
               <label for="validationCustom04" class="form-label">Стать</label>
-              <select class="form-select" id="validationCustom04" name="gender" required>
+              <select class="form-select" id="validationCustom04" name="gender" data-validation-custom04
+                data-pattern="^[A-Za-zА-Яа-яЁёІіЇїЄє\s]+$" required>
                 <option selected></option>
                 <option>Чоловіча</option>
                 <option>Жіноча</option>

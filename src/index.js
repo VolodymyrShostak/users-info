@@ -12,43 +12,44 @@ $(function () {
     const regex = /^\+38\(\d{3}\)\d{3}-\d{2}-\d{2}$/;
     return regex.test(phone);
   }
-  
-  $('#formModal').submit(function (event) {
-    event.preventDefault();
-    event.stopPropagation();
+  // Обробка діалогової форми
+  $('#formModal').each(function () {
+    $(this).submit(function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      $(this).addClass('was-validated');
+      if (!this.checkValidity()) {
+        return;
+      }
 
-    if (!this.checkValidity()) {
-      return;
-    }
-    $(this).addClass('was-validated');
-    const formData = new FormData(this);
-    const formUserObject = {};
-    for (let pair of formData.entries()) {
-      formUserObject[pair[0]] = pair[1];
-    }
-    const phoneInput = formUserObject['phone'];
-    if (!validatePhone(phoneInput)) {
-      $('#phoneInput').removeClass('is-valid');
-      $('#phoneInput').addClass('is-invalid');
-    } else {
-      $('#phoneInput').removeClass('is-invalid');
-      $('#phoneInput').addClass('is-valid');
-    }
+      const formData = new FormData(this);
+      const formUserObject = {};
+      for (let pair of formData.entries()) {
+        formUserObject[pair[0]] = pair[1];
+      }
+      const phoneInput = formUserObject['phone'];
+      if (!validatePhone(phoneInput)) {
+        $('#phoneInput').removeClass('is-valid');
+        $('#phoneInput').addClass('is-invalid');
+      } else {
+        $('#phoneInput').removeClass('is-invalid');
+        $('#phoneInput').addClass('is-valid');
+      }
 
-    const user = { ...formUserObject, id: Date.now() };
-    users.push(user);
+      const user = { ...formUserObject, id: Date.now() };
+      users.push(user);
 
-    const file = $('#avatarInput').get(0).files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = function () {
-        const dataURL = reader.result;
+      const file = $('#avatarInput').get(0).files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+          const dataURL = reader.result;
 
-        $('#objectImage').attr('src', dataURL);
+          $('#objectImage').attr('src', dataURL);
 
-        $('tbody').prepend(
-          `<tr>
+          $('tbody').prepend(
+            `<tr>
                 <td id="image-container" class="text-center align-middle" >
                 <img class="rounded-5" src="${dataURL}" width="40" height="40"/></td>
                 <td class="text-center align-middle">${formUserObject.name}</td>
@@ -64,12 +65,12 @@ $(function () {
               Details
             </button></td>
               </tr>`
-        );
-      };
-    } else {
-      $('#objectImage').attr('src', '../assets/avatar.png');
-      $('tbody').prepend(
-        `<tr>
+          );
+        };
+      } else {
+        $('#objectImage').attr('src', '../assets/avatar.png');
+        $('tbody').prepend(
+          `<tr>
               <td id="image-container" class="text-center align-middle"><img src="../assets/avatar.png" width="40"/></td>
             <td class="text-center align-middle">${formUserObject.name}</td>
                  <td class="text-center align-middle">${formUserObject.email}</td>
@@ -85,19 +86,19 @@ $(function () {
               Details
             </button></td>
             </tr>`
-      );
-    }
+        );
+      }
 
-    $('#objectName').text(formUserObject.name);
-    $('#objectEmail').text(formUserObject.email);
-    $('#objectPhone').text(formUserObject.phone);
+      $('#objectName').text(formUserObject.name);
+      $('#objectEmail').text(formUserObject.email);
+      $('#objectPhone').text(formUserObject.phone);
 
-    $('#phoneInput').removeClass('is-invalid');
-    $('#objectDetails').removeClass('d-none');
-    this.reset();
-    $('#createUserModal').modal('hide');
+      $('#phoneInput').removeClass('is-invalid');
+      $('#objectDetails').removeClass('d-none');
+      this.reset();
+      $('#createUserModal').modal('hide');
+    });
   });
-  
 
   const detailUserModal = $('#detailsModal');
 
@@ -162,7 +163,7 @@ $(function () {
 
       success: function (data) {
         const user = data.results[0];
-        const newUser = {
+               const newUser = {
           name: user.name.first + ' ' + user.name.last,
           city: user.location.city,
           phone: user.phone,
@@ -179,7 +180,7 @@ $(function () {
         $('#objectDetails').removeClass('d-none');
 
         users.push(newUser);
-
+        
         $('#generateUserModal').modal('hide');
 
         $('tbody').prepend(
