@@ -5,15 +5,15 @@ $(function () {
 
   const users = [];
 
-  $('#createUserModal').on('show.bs.modal', function () {
-    $('#formModal').removeClass('was-validated');
+  $('#createUserModal').on('hide.bs.modal', function () {
+    $('#form_createUserModal').removeClass('was-validated');
   });
   function validatePhone(phone) {
     const regex = /^\+38\(\d{3}\)\d{3}-\d{2}-\d{2}$/;
     return regex.test(phone);
   }
 
-  $('#formModal').submit(function (event) {
+  $('#form_createUserModal').submit(function (event) {
     event.preventDefault();
     event.stopPropagation();
     $(this).addClass('was-validated');
