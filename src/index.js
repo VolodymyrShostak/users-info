@@ -12,48 +12,48 @@ $(function () {
     const regex = /^\+38\(\d{3}\)\d{3}-\d{2}-\d{2}$/;
     return regex.test(phone);
   }
-  // Обробка діалогової форми
-  $('#formModal').each(function () {
-    $(this).submit(function (event) {
-      event.preventDefault();
-      event.stopPropagation();
-      $(this).addClass('was-validated');
-      if (!this.checkValidity()) {
-        return;
-      }
+  
+  $('#formModal').submit(function (event) {
+    event.preventDefault();
+    event.stopPropagation();
 
-      const formData = new FormData(this);
-      const formObject = {};
-      for (let pair of formData.entries()) {
-        formObject[pair[0]] = pair[1];
-      }
-      const phoneInput = formObject['phone'];
-      if (!validatePhone(phoneInput)) {
-        $('#phoneInput').removeClass('is-valid');
-        $('#phoneInput').addClass('is-invalid');
-      } else {
-        $('#phoneInput').removeClass('is-invalid');
-        $('#phoneInput').addClass('is-valid');
-      }
+    if (!this.checkValidity()) {
+      return;
+    }
+    $(this).addClass('was-validated');
+    const formData = new FormData(this);
+    const formUserObject = {};
+    for (let pair of formData.entries()) {
+      formUserObject[pair[0]] = pair[1];
+    }
+    const phoneInput = formUserObject['phone'];
+    if (!validatePhone(phoneInput)) {
+      $('#phoneInput').removeClass('is-valid');
+      $('#phoneInput').addClass('is-invalid');
+    } else {
+      $('#phoneInput').removeClass('is-invalid');
+      $('#phoneInput').addClass('is-valid');
+    }
 
-      const user = { ...formObject, id: Date.now() };
-      users.push(user);
+    const user = { ...formUserObject, id: Date.now() };
+    users.push(user);
 
-      const file = $('#avatarInput').get(0).files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function () {
-          const dataURL = reader.result;
+    const file = $('#avatarInput').get(0).files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = function () {
+        const dataURL = reader.result;
 
-          $('#objectImage').attr('src', dataURL);
+        $('#objectImage').attr('src', dataURL);
 
-          $('tbody').prepend(
-            `<tr>
+        $('tbody').prepend(
+          `<tr>
                 <td id="image-container" class="text-center align-middle" >
                 <img class="rounded-5" src="${dataURL}" width="40" height="40"/></td>
-                <td class="text-center align-middle">${formObject.name}</td>
-                 <td class="text-center align-middle">${formObject.email}</td>
-                <td class="text-center align-middle">${formObject.phone}</td>
+                <td class="text-center align-middle">${formUserObject.name}</td>
+                 <td class="text-center align-middle">${formUserObject.email}</td>
+                <td class="text-center align-middle">${formUserObject.phone}</td>
                  <td class="text-center align-middle"><button
               type="button"
               class="btn btn-outline-info"
@@ -64,17 +64,16 @@ $(function () {
               Details
             </button></td>
               </tr>`
-          );
-        };
-        reader.readAsDataURL(file);
-      } else {
-        $('#objectImage').attr('src', '../assets/avatar.png');
-        $('tbody').prepend(
-          `<tr>
+        );
+      };
+    } else {
+      $('#objectImage').attr('src', '../assets/avatar.png');
+      $('tbody').prepend(
+        `<tr>
               <td id="image-container" class="text-center align-middle"><img src="../assets/avatar.png" width="40"/></td>
-            <td class="text-center align-middle">${formObject.name}</td>
-                 <td class="text-center align-middle">${formObject.email}</td>
-                <td class="text-center align-middle">${formObject.phone}</td>
+            <td class="text-center align-middle">${formUserObject.name}</td>
+                 <td class="text-center align-middle">${formUserObject.email}</td>
+                <td class="text-center align-middle">${formUserObject.phone}</td>
             
               <td class="text-center align-middle"><button
               type="button"
@@ -86,18 +85,19 @@ $(function () {
               Details
             </button></td>
             </tr>`
-        );
-      }
-      $('.modal').modal('hide');
-      $('#objectName').text(formObject.name);
-      $('#objectEmail').text(formObject.email);
-      $('#objectPhone').text(formObject.phone);
+      );
+    }
 
-      $('#phoneInput').removeClass('is-invalid');
-      $('#objectDetails').removeClass('d-none');
-      this.reset();
-    });
+    $('#objectName').text(formUserObject.name);
+    $('#objectEmail').text(formUserObject.email);
+    $('#objectPhone').text(formUserObject.phone);
+
+    $('#phoneInput').removeClass('is-invalid');
+    $('#objectDetails').removeClass('d-none');
+    this.reset();
+    $('#createUserModal').modal('hide');
   });
+  
 
   const detailUserModal = $('#detailsModal');
 
@@ -110,7 +110,7 @@ $(function () {
         return user.id === recipient;
       });
 
-      $('.modal-body-details').prepend(
+      $('#dispplayDetailsModal').prepend(
         ` <ul id="modal__user-info" >
                         <div class="d-flex flex-row" >
                         <p>Ім'я:&#160;&#160;&#160;</p>
@@ -162,7 +162,6 @@ $(function () {
 
       success: function (data) {
         const user = data.results[0];
-        console.log(user);
         const newUser = {
           name: user.name.first + ' ' + user.name.last,
           city: user.location.city,
@@ -180,7 +179,7 @@ $(function () {
         $('#objectDetails').removeClass('d-none');
 
         users.push(newUser);
-        console.log(users);
+
         $('#generateUserModal').modal('hide');
 
         $('tbody').prepend(
